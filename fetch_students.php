@@ -2,7 +2,7 @@
     include('config.php');
 
     //set the content-type header to json
-    header('Content-Type : application/json');
+    header('Content-Type: application/json');
 
     //SQL statement to get data from the database
     $sql = "SELECT * FROM student";
@@ -14,7 +14,7 @@
     }
 
     //Fetch all rows as an associative array
-    $rows = mysqli_fetch_assoc($result);
+    $rows = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     //Encoded result as json and output it
     echo json_encode($rows);

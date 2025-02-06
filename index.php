@@ -23,7 +23,7 @@
         text-align: center;
     }
     #studentForm{
-       display: none;
+       /* display: none; */
         max-width: 500px;
         padding: 1rem;
         border-radius: 1rem;
@@ -38,6 +38,13 @@
         border: 1px solid slategray;
         margin: 0 auto;
     }
+    #studentForm select{
+       width: 450px;
+       padding: 0.5rem;
+       border-radius: 0.5rem;
+       border: 1px solid slategray;
+       margin: 0 auto;
+   }
     #studentForm button{
         width : 470px;
         color: white;
@@ -64,6 +71,7 @@
        border: 1px solid slategray;
        margin: 0 auto;
    }
+   
    #studentUpdateForm button{
        width : 470px;
        color: white;
@@ -85,6 +93,12 @@
 
         <label for="birth" >Birth Date</label><br>
         <input type="date" name="birth" id="birth" required><br><br>
+
+        <label for="gender">Gender:</label><br>
+        <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br><br>
 
         <label for="resume">Resume</label><br>
         <input type="file" name="resume" id="resume" accept=".pdf" required><br><br>
@@ -129,8 +143,8 @@
         //Initialize the data table
         var dataTable = $('#studentTable').dataTable({
             ajax: {
-                url:'fetch_employees.php',
-                dataSrc: '',
+                url:'fetch_students.php',
+                dataSrc: ''
             
             },
             columns: [
@@ -159,6 +173,27 @@
         });
 
         //Handle Data Submission
+        $('#studentForm').on('submit', function(e){
+            e.preventDefault();
+            console.log("Student adding function executed");
+            
+
+            //create form data object
+            let formData = new FormData(this);
+            $.ajax ({
+                url : 'add_student.php',
+                method : 'POST',
+                data : formData,
+                processData: false,
+                contentType: false,
+                success : function(response){
+                    alert(response);
+                    dataTable.ajax.reload();
+                    $('#studentForm').reset();
+                }
+
+            })
+        })
 
         //Update Handle
 
