@@ -2,7 +2,8 @@
     include('config.php');
 
     //Set the content type to json
-    header('Content-Type : application/json');
+    header('Content-Type: application/json');
+
 
     if(isset($_GET['id'])){
 

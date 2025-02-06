@@ -39,7 +39,7 @@
         margin: 0 auto;
     }
     #studentForm select{
-       width: 450px;
+       width: 470px;
        padding: 0.5rem;
        border-radius: 0.5rem;
        border: 1px solid slategray;
@@ -66,6 +66,13 @@
    }
    #studentUpdateForm input{
        width: 450px;
+       padding: 0.5rem;
+       border-radius: 0.5rem;
+       border: 1px solid slategray;
+       margin: 0 auto;
+   }
+   #studentUpdateForm select{
+       width: 470px;
        padding: 0.5rem;
        border-radius: 0.5rem;
        border: 1px solid slategray;
@@ -109,11 +116,18 @@
 
     <!--Update student modal-->
     <form id="studentUpdateForm" enctype="multipart/form-data">
+    <input type="hidden" id="updateId" name="id">
         <label for="updateName">Name :</label><br>
         <input type="text" name="updateName" id="updateName" required><br><br>
 
         <label for="updateBirth" >Birth Date</label><br>
         <input type="date" name="updateBirth" id="updateBirth" required><br><br>
+
+        <label for="updateGender">Gender:</label><br>
+        <select id="updateGender" name="updateGender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select><br><br>
 
         <label for="updateResume">Resume</label><br>
         <input type="file" name="updateResume" id="updateResume" accept=".pdf" required><br><br>
@@ -141,7 +155,7 @@
    <script>
     $(document).ready(function(){
         //Initialize the data table
-        var dataTable = $('#studentTable').dataTable({
+        var dataTable = $('#studentTable').DataTable({
             ajax: {
                 url:'fetch_students.php',
                 dataSrc: ''
@@ -187,17 +201,60 @@
                 processData: false,
                 contentType: false,
                 success : function(response){
+                    console.log("Before alert");
+                    
                     alert(response);
+                    console.log("After alert");
+                    
                     dataTable.ajax.reload();
-                    $('#studentForm').reset();
+                    $('#studentForm')[0].reset();
+                    
                 }
 
             })
         })
 
         //Update Handle
+        $('#studentTable').on('click', '.btn-update', function(){
+
+            //Get the student Id from the button
+            let studentID = $(this).data('id');
+
+            $.ajax ({
+                url : 'fetch_student_ById.php',
+                method : 'GET',
+                data : {id : studentID},
+                success: function(response){
+                    $('#updateName').val(response.name);
+                    $('#updateBirth').val(response.birth);
+                    $('#updateGender').val(response.gender);
+
+                    $('#studentForm').hide();
+                    $('#studentUpdateForm').show();
+                }
+            })
+        })
 
         //Delete handle
+        $('#studentTable').on('click', '.btn-delete', function(){
+
+            //Get the student Id
+            let studentId = $(this).data('id');
+            console.log(studentId);
+            
+
+            if(confirm("Are ypu sure you want to delete thi student")){
+                $.ajax({
+                url: 'delete_student.php',
+                method: 'POST',
+                data : {id : studentId},
+                success: function(response){
+                    alert(response);
+                    dataTable.ajax.reload();
+                },
+            })
+            }
+        })
     })
     </script>
 </body>
