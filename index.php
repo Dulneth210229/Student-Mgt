@@ -118,19 +118,19 @@
     <form id="studentUpdateForm" enctype="multipart/form-data">
     <input type="hidden" id="updateId" name="id">
         <label for="updateName">Name :</label><br>
-        <input type="text" name="updateName" id="updateName" required><br><br>
+        <input type="text" name="name" id="updateName" required><br><br>
 
         <label for="updateBirth" >Birth Date</label><br>
-        <input type="date" name="updateBirth" id="updateBirth" required><br><br>
+        <input type="date" name="birth" id="updateBirth" required><br><br>
 
         <label for="updateGender">Gender:</label><br>
-        <select id="updateGender" name="updateGender" required>
+        <select id="updateGender" name="gender" required>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
         </select><br><br>
 
-        <label for="updateResume">Resume</label><br>
-        <input type="file" name="updateResume" id="updateResume" accept=".pdf" required><br><br>
+        <label for="resume">Resume</label><br>
+        <input type="file" name="resume" id="resume" accept=".pdf" ><br><br>
 
         <button type="submit">Update Student</button>
         <button id="close" style="background-color: yellow; margin-top: 1rem ;border: none" >Close The Form</button>
@@ -200,12 +200,8 @@
                 data : formData,
                 processData: false,
                 contentType: false,
-                success : function(response){
-                    console.log("Before alert");
-                    
+                success : function(response){ 
                     alert(response);
-                    console.log("After alert");
-                    
                     dataTable.ajax.reload();
                     $('#studentForm')[0].reset();
                     
@@ -214,8 +210,10 @@
             })
         })
 
-        //Update Handle
-        $('#studentTable').on('click', '.btn-update', function(){
+        //Update Handle by getting data from the database to the updated form
+        $('#studentTable').on('click', '.btn-update', function(e){
+
+            e.preventDefault();
 
             //Get the student Id from the button
             let studentID = $(this).data('id');
@@ -225,13 +223,47 @@
                 method : 'GET',
                 data : {id : studentID},
                 success: function(response){
+                    $('#updateId').val(response.id);
                     $('#updateName').val(response.name);
                     $('#updateBirth').val(response.birth);
                     $('#updateGender').val(response.gender);
-
+                    // $('#updateResume').val(response.resume);
                     $('#studentForm').hide();
                     $('#studentUpdateForm').show();
                 }
+            })
+        })
+        
+        //Update handler to send data to the database 
+        $('#studentUpdateForm').on('submit', function(e){
+
+            e.preventDefault();
+
+            //create form data object to get data from the form
+            let formData = new FormData(this);
+            console.log(formData.id);
+            
+
+            $.ajax({
+                url : 'update_student.php',
+                method: 'POST',
+                data : formData,
+                processData: false,
+                contentType: false,
+                success: function(response){
+
+                    alert(response);
+                    dataTable.ajax.reload();
+                    // $('#studentForm').show();
+                    // $('#studentUpdateForm').hide();
+
+
+                },
+                // error: function(xhr, status, error){
+                //         console.log('Error Updating employee : ', error);
+                        
+                //     }
+                
             })
         })
 

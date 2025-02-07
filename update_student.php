@@ -19,7 +19,7 @@
 
         if($_FILES['resume']['error'] === UPLOAD_ERR_OK){
             $uploadDir = 'uploads/'; //Directory to store uploads file
-            if(!is_dir($$uploadDir)){
+            if(!is_dir($uploadDir)){
                 mkdir($uploadDir, 0777, true); //Create the new directory if it does not exist
             }
 
